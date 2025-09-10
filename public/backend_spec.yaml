@@ -1,0 +1,80 @@
+openapi: 3.1.0
+info:
+  title: Sudoku
+  description: api for Sudoku site
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:9000'
+paths:
+  /state/{pid}:
+    post:
+      description: post puzzle state by user and puzzle
+      parameters:
+        - in: query
+          name: user_id
+          description: id of user who's state is being saved
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful state
+          content:
+            application/json:
+              schema:
+                type:  string
+    get:
+      description: get puzzle state by user and puzzle
+      parameters:
+        - in: query
+          name: user_id
+          description: id of user who's state is being loaded
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful state
+          content:
+            application/json:
+              schema:
+                type:  string
+  /puzzle/{id}:
+    post:
+      description: post puzzle by id
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type : string
+    get:
+      description: get puzzle by id
+      responses:
+        200:
+          description: New response
+          content:
+            application/json:
+              schema:
+               type : string
+  /user/{id}:
+    post:
+      description: adds a new user
+      responses:
+        200:
+          description: added a new user
+          content:
+            application/json:
+              schema:
+                type: string
+    get:
+      description: get user page
+      responses:
+        200:
+          description: New response
+          content:
+            application/json:
+              schema:
+                type : string
+
