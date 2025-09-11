@@ -1,0 +1,8 @@
+type: object
+properties:
+  grid:
+    type: string
+    description: "a string representing the 9X9 board, using 0's for empty spaces"
+required:
+  - grid
+additionalProperties: false

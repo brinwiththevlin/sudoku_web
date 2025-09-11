@@ -7,41 +7,111 @@ servers:
   - url: 'http://localhost:9000'
 paths:
   /state/{pid}:
-    post:
-      description: post puzzle state by user and puzzle
-      parameters:
-        - in: query
-          name: user_id
-          description: id of user who's state is being saved
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: successful state
-          content:
-            application/json:
-              schema:
-                type:  string
+    parameters: # Parameters at the path level apply to all operations (POST, GET, etc.)
+      - name: pid
+        in: path
+        description: The unique ID of the puzzle.
+        required: true
+        schema:
+          type: string
+          example: "puzzle_12345"
     get:
-      description: get puzzle state by user and puzzle
+      summary: Retrieve a puzzle state.
+      description: Retrieve a puzzle state
       parameters:
-        - in: query
-          name: user_id
-          description: id of user who's state is being loaded
+        - name: user_id
+          in: query
+          description: The ID of the user whose state is being saved.
           required: true
           schema:
             type: string
+            example: "user_abcde"
       responses:
         200:
-          description: successful state
+          description: Success
           content:
             application/json:
               schema:
-                type:  string
-  /puzzle/{id}:
+                $ref: "./schemas/PuzzleState.yaml"
+        400:
+          description: Bad Request - The provided data is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Error.yaml'
     post:
-      description: post puzzle by id
+      summary: Save a puzzle state.
+      description: Saves the current state of a specific puzzle for a given user.
+      parameters:
+        - name: user_id
+          in: query
+          description: The ID of the user whose state is being saved.
+          required: true
+          schema:
+            type: string
+            example: "user_abcde"
+      requestBody:
+        description: The state of the Sudoku puzzle grid.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/PuzzleState.yaml' # Reference to a reusable schema
+      responses:
+        '200':
+          description: State saved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          description: Bad Request - The provided data is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Error.yaml'
+
+
+  /puzzle/{id}:
+    parameters:
+      - name: puzzle_id
+        in: query
+        description: The id of the puzzle in question.
+        required: true
+        schema:
+          type: string
+          example: "user_abcde"
+    get:
+      summary: Get puzzle by it's id.
+      description: get puzzle by id.
+      responses:
+        200:
+          description: New response
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/PuzzleState.yaml' # uses same as state for now
+        400:
+          description: Bad Request - The provided data is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Error.yaml'
+    post:
+      summary: Post puzzle by it's id.
+      description: post puzzle by id.
+      requestBody:
+        description: The state of the Sudoku puzzle grid.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/PuzzleState.yaml' # uses same as state for now
       responses:
         200:
           description: success
@@ -49,26 +119,25 @@ paths:
             application/json:
               schema:
                 type : string
-    get:
-      description: get puzzle by id
-      responses:
-        200:
-          description: New response
+        400:
+          description: Bad Request - The provided data is invalid.
           content:
             application/json:
               schema:
-               type : string
+                $ref: './schemas/Error.yaml'
+
+
   /user/{id}:
-    post:
-      description: adds a new user
-      responses:
-        200:
-          description: added a new user
-          content:
-            application/json:
-              schema:
-                type: string
+    parameters:
+      - name: user_id
+        in: query
+        description: The id of a user
+        required: true
+        schema:
+          type: string
+          example: "user_abcde"
     get:
+      summary: Get user page.
       description: get user page
       responses:
         200:
@@ -76,5 +145,33 @@ paths:
           content:
             application/json:
               schema:
-                type : string
-
+                $ref: "./schemas/Users.yaml"
+        400:
+          description: Bad Request - The provided data is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Error.yaml'
+    post:
+      summary: Adds a new user to the database.
+      description: adds a new user
+      requestBody:
+        description: user account info
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/Users.yaml"
+      responses:
+        200:
+          description: added a new user
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          description: Bad Request - The provided data is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Error.yaml'
