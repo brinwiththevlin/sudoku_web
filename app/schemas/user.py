@@ -1,6 +1,8 @@
 """Pydantic specs for the User datatable."""
 
 # app/schemas/user.py
+from uuid import UUID
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -31,7 +33,7 @@ class User(UserBase):
     password hash would be excluded here.
     """
 
-    id: int
+    id: UUID
     username: str
 
     class Config:
